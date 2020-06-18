@@ -1,0 +1,13 @@
+const NOMICS_API_BASE_URL = 'https://api.nomics.com/v1'
+const NOMICS_API_KEY = process.env.NOMICS_API_KEY
+const COIN_MARKET_CAP_API_BASE_URL = 'https://pro-api.coinmarketcap.com/v1'
+const COIN_MARKET_CAP_API_KEY = process.env.COIN_MARKET_CAP_API_KEY
+const COIN_MARKET_CAP_AUTH_HEADER = 'X-CMC_PRO_API_KEY'
+
+export {
+  NOMICS_API_BASE_URL,
+  NOMICS_API_KEY,
+  COIN_MARKET_CAP_API_BASE_URL,
+  COIN_MARKET_CAP_API_KEY,
+  COIN_MARKET_CAP_AUTH_HEADER
+}
