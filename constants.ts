@@ -8,6 +8,9 @@ const COIN_MARKET_CAP_AUTH_HEADER = 'X-CMC_PRO_API_KEY'
 const VICTORY_LINE_CHART_THEME: typeof VictoryTheme.grayscale = {
   axis: {
     style: {
+      axis: {
+        stroke: '#ccc'
+      },
       tickLabels: {
         font: 'sans-serif',
         stroke: '#ccc',
@@ -28,6 +31,41 @@ const VICTORY_LINE_CHART_THEME: typeof VictoryTheme.grayscale = {
         strokeWidth: '2px'
       }
     }
+  },
+  scatter: {
+    style: {
+      data: {
+        fill: '#eaeaea',
+        stroke: '#eaeaea'
+      }
+    }
+  },
+  tooltip: {
+    flyoutStyle: {
+      strokeWidth: 1,
+      fill: '#3d4142',
+      fillOpacity: 0.85,
+      pointerEvents: "none",
+    },
+    cornerRadius: 5,
+    pointerLength: 10
+  },
+  voronoi: {
+    style: {
+      labels: {
+        stroke: '#eaeaea',
+        fontWeight: 300,
+        padding: 10,
+        pointerEvents: 'none',
+        textAnchor: 'middle',
+        letterSpacing: 'normal',
+        fontSize: 14
+        
+      }
+    },
+    width: 450,
+    height: 300,
+    padding: 50,
   }
 }
 
