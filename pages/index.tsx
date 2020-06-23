@@ -1,20 +1,105 @@
+import React, { useState } from 'react'
 import moment from 'moment'
+
+import {
+  VictoryChart,
+  VictoryLine,
+  VictoryAxis,
+  VictoryTooltip,
+  VictoryVoronoiContainer,
+  VictoryScatter
+} from 'victory'
 
 import {
   COIN_MARKET_CAP_API_BASE_URL,
   COIN_MARKET_CAP_AUTH_HEADER,
   COIN_MARKET_CAP_API_KEY,
   NOMICS_API_BASE_URL,
-  NOMICS_API_KEY
+  NOMICS_API_KEY,
+  VICTORY_LINE_CHART_THEME
 } from '../constants'
 
 function Home({ currencies, chartData }) {
-  console.log('currencies: ', currencies)
-  console.log('chartData: ', chartData)
+  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0])
 
+  const generateChartInput = () => {
+    const selectedCurrencyChartData = chartData.find(chartDataEntry =>
+      chartDataEntry.currency === selectedCurrency.symbol
+    )
+
+    const { prices, timestamps } = selectedCurrencyChartData
+
+    const chartInput = prices.map((price, index) => {
+      const date = new Date(timestamps[index])
+      return {
+        date: date.valueOf(),
+        price: Number(price)
+      }
+    })
+
+    return chartInput
+  }
+
+  const getXAxisLabel = date => (
+    moment(date).format('MMM YY')
+  )
+
+  const getDataPointLabel = ({ datum }) => {
+    return `${moment(datum.date).format('MMMM Do YYYY')}
+      \n$${datum.price.toFixed(2)}`
+  }
+
+  const data = generateChartInput()
   return (
-    <div>
-      <h2>hello, world</h2>
+    <div style={{ maxWidth: 768 }}>
+      <VictoryChart
+        width={768}
+        height={500}
+        containerComponent={<VictoryVoronoiContainer />}
+        theme={VICTORY_LINE_CHART_THEME}
+        domainPadding={{ y: 50 }}
+        padding={100}
+      >
+        <VictoryLine
+          data={data}
+          interpolation="natural"
+          x="date"
+          y="price"
+          animate={{
+            duration: 2000,
+            onLoad: { duration: 750 }
+          }}
+        />
+        <VictoryScatter
+          data={data}
+          x="date"
+          y="price"
+          labels={getDataPointLabel}
+          labelComponent={
+            <VictoryTooltip
+              horizontal
+              dy={-50}
+              pointerLength={0}
+              pointerWidth={0}
+            />
+          }
+          size={({ active }) => active ? 6 : 0}
+        />
+        <VictoryAxis
+          tickValues={data.map(dataPoint => dataPoint.date)}
+          tickFormat={getXAxisLabel}
+          tickCount={6}
+        />
+        <VictoryAxis dependentAxis />
+      </VictoryChart>
+
+      <style jsx global>
+        {`
+          html {
+            background: #171717;
+          }
+        `}
+      </style>
     </div>
   )
 }
