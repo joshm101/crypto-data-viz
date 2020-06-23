@@ -4,7 +4,10 @@ import moment from 'moment'
 import {
   VictoryChart,
   VictoryLine,
-  VictoryAxis
+  VictoryAxis,
+  VictoryTooltip,
+  VictoryVoronoiContainer,
+  VictoryScatter
 } from 'victory'
 
 import {
@@ -27,9 +30,9 @@ function Home({ currencies, chartData }) {
     const { prices, timestamps } = selectedCurrencyChartData
 
     const chartInput = prices.map((price, index) => {
-      const date = timestamps[index]
+      const date = new Date(timestamps[index])
       return {
-        date,
+        date: date.valueOf(),
         price: Number(price)
       }
     })
@@ -41,12 +44,18 @@ function Home({ currencies, chartData }) {
     moment(date).format('MMM YY')
   )
 
+  const getDataPointLabel = ({ datum }) => {
+    return `${moment(datum.date).format('MMMM Do YYYY')}
+      \n$${datum.price.toFixed(2)}`
+  }
+
   const data = generateChartInput()
   return (
     <div style={{ maxWidth: 768 }}>
       <VictoryChart
         width={768}
         height={500}
+        containerComponent={<VictoryVoronoiContainer />}
         theme={VICTORY_LINE_CHART_THEME}
         domainPadding={{ y: 50 }}
         padding={100}
@@ -60,6 +69,21 @@ function Home({ currencies, chartData }) {
             duration: 2000,
             onLoad: { duration: 750 }
           }}
+        />
+        <VictoryScatter
+          data={data}
+          x="date"
+          y="price"
+          labels={getDataPointLabel}
+          labelComponent={
+            <VictoryTooltip
+              horizontal
+              dy={-50}
+              pointerLength={0}
+              pointerWidth={0}
+            />
+          }
+          size={({ active }) => active ? 6 : 0}
         />
         <VictoryAxis
           tickValues={data.map(dataPoint => dataPoint.date)}
